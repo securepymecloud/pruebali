@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <title>Formulario</title>
+  </head>
+  <body>
+    <h1>Formulario</h1>
+    <form>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre"><br><br>
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" name="apellido"><br><br>
+      <button type="button" onclick="guardarInfo()">Enviar</button>
+      <button type="button" onclick="consultarInfo()">Ver Info</button>
+    </form>
+
+    <script>
+      function guardarInfo() {
+        var nombre = document.getElementById('nombre').value;
+        var apellido = document.getElementById('apellido').value;
+
+        fetch('http://ec2-54-242-76-154.compute-1.amazonaws.com:5000/guardar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre: nombre, apellido: apellido })
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error('Error:', error));
+      }
+
+      function consultarInfo() {
+        fetch('http://127.0.0.1:5001/consultar')
+        .then(response => response.json())
+        .then(data => {
+          var infoDiv = document.createElement('div');
+          infoDiv.innerHTML = '<h2>Información:</h2>';
+          var ul = document.createElement('ul');
+          data.forEach(function(item) {
+            var li = document.createElement('li');
+            li.innerHTML = item.nombre + ' ' + item.apellido;
+            ul.appendChild(li);
+          });
+          infoDiv.appendChild(ul);
+          document.body.appendChild(infoDiv);
+        })
+        .catch(error => console.error('Error:', error));
+      }
+    </script>
+  </body>
+</html>

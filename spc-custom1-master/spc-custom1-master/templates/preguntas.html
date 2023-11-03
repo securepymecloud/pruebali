@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPC-Preguntas</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9b9797;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #818183;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header a.btn-danger { /* Estilo para el botón Cerrar Sesión */
+            background-color: #d9534f;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none; /* Quita el subrayado de enlace */
+            margin-right: -80px; /* Espacio derecho para separar del nombre del usuario */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #03101f;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        select {
+            appearance: none;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .btn-submit {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 0;
+        }
+        .menu ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        .menu ul li:last-child {
+            margin-right: 0;
+        }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+         /* Estilo para los botones de respuesta */
+       .respuesta-btn {
+            background-color: #3f749a;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px; /* Espacio debajo de los botones */
+            display: block; /* Hacer que los botones se muestren en líneas separadas */
+            width: 100%; /* Ocupar todo el ancho del contenedor */
+        }
+        /* Estilo para ocultar todas las preguntas, excepto la activa */
+        .pregunta {
+            display: none;
+        }
+
+        /* Estilo para mostrar la pregunta activa */
+        .pregunta-activa {
+            display: block;
+        }
+        /* Para mostrar los botones en línea horizontalmente */
+        .respuestas {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Estilo para el botón "Atrás" */
+        #atras-btn {
+            background-color: #8c0325; /* Azul brillante */
+            color: #fff; /* Texto blanco */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px; /* Espacio entre botones */
+        }
+
+        /* Estilo para el botón "Siguiente" */
+        #siguiente-btn {
+            background-color: #033259; /* Azul oscuro */
+            color: #fff; /* Texto blanco */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Estilo al pasar el cursor sobre los botones */
+        #atras-btn:hover,
+        #siguiente-btn:hover {
+            background-color: #050228; /* Cambio de tono al pasar el cursor */
+        }
+        /* Estilo para resaltar la pregunta seleccionada */
+        .pregunta-resaltada {
+            background-color: #04314b; /* rosa */
+            border-color: #ff9999; /* Un borde rosado */
+        }
+        footer {
+        background-color: #333;
+        color: #333333;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+footer p {
+    margin: 0;
+}
+
+    </style>
+
+
+</head>
+<body>
+    <div class="header">
+        <h4> <img src="{{ url_for('static', filename='logo.png') }}" alt="logo spc"  width="450" height="250"></h4>
+        <p>Ultimo acceso registrado, {{ session['fechasesion']}} </p>
+         <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+    </div>
+    <div class="menu">
+        <ul>
+            <li><a href="#">Menú</a></li>
+            <li><a href="http://ec2-54-242-76-154.compute-1.amazonaws.com:5001/get_user_data">Perfil</a></li>
+            <li><a href="http://ec2-54-242-76-154.compute-1.amazonaws.com:5003/api/preguntas">Cuestionario</a></li>
+            <li><a href="http://ec2-54-242-76-154.compute-1.amazonaws.com:5005/api/reporte">Reporte</a></li>
+        </ul>
+    </div>
+
+    <h1>
+    {% if estado_actual == 1 %}
+        Cuestionario de Riesgo
+    {% else %}
+        Cuestionario de Seguridad
+    {% endif %}
+    </h1>
+
+
+
+       <h3><div class="container" id="barra-estado"></div></h3>
+    <div id="notificacionProgreso" style="display:none; color: green; text-align: center;"></div>
+
+
+
+
+     <div class="container">
+        <!-- Utiliza un contador para llevar un registro de la pregunta actual -->
+        {% set pregunta_actual = 1 %}
+        {% for id_pregunta, data in preguntas_y_respuestas.items() %}
+        <div class="pregunta {% if pregunta_actual == 1 %}pregunta-activa{% endif %}" id="pregunta-{{ pregunta_actual }}">
+            <h2>{{ data.pregunta }}</h2>
+            <div class="respuestas">
+                {% for respuesta in data.respuestas %}
+
+                    <input type="hidden" name="id_pregunta" value="{{ id_pregunta }}">
+                    <input type="hidden" name="id_respuesta" value="{{ respuesta.id_respuesta }}"> <!-- Agrega este campo oculto -->
+                    <button class="respuesta-btn" data-id-pregunta="{{ id_pregunta }}" data-id-respuesta="{{ respuesta.id_respuesta }}">{{ respuesta.respuesta }}</button>
+
+            {% endfor %}
+            </div>
+
+
+
+
+
+
+
+        </div>
+
+        {% set pregunta_actual = pregunta_actual + 1 %}
+        {% endfor %}
+
+        <!-- Agrega un botón "Siguiente"  -->
+
+
+
+        </div>
+    </div>
+    <div class="container">
+            <button id="atras-btn" disabled>Atrás</button>
+        <button id="siguiente-btn">Siguiente</button>
+
+        <div class="botones-navegacion"></div>
+    </div>
+    <div class="container">
+        <br>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2023 Secure Pyme Cloud - Todos los derechos reservados</p>
+    </div>
+</footer>
+<script>
+    // Carga js-cookie desde CDN si no está cargado
+    if (typeof Cookies === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js';
+        document.head.appendChild(script);
+    }
+</script>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+
+        // Manejar el clic en los botones de respuesta
+        $('.respuesta-btn').on('click', function() {
+            var respuestaSeleccionada = $(this).text();
+            var idPregunta = $(this).data('id-pregunta');
+            var idRespuesta = $(this).data('id-respuesta');
+
+            // Enviar los datos al servidor para guardarlos en la base de datos
+            $.ajax({
+                type: 'POST',
+                url: '/api/respuesta',
+                data: {
+                    id_pregunta: idPregunta,
+                    respuesta: respuestaSeleccionada,
+                    id_respuesta: idRespuesta
+                },
+                success: function(response) {
+                    console.log('Respuesta guardada en la base de datos');
+                },
+                error: function(error) {
+                    console.error('Error al guardar la respuesta: ' + error);
+                }
+            });
+        });
+
+        // Manejar el clic en los elementos de respuesta
+        $('.respuesta').on('click', function() {
+            var idRespuesta = $(this).data('idrespuesta');
+            console.log('ID de respuesta seleccionada:', idRespuesta);
+
+            // Resto del código para manejar la respuesta seleccionada...
+        });
+
+        var preguntas = $('.pregunta');
+        var preguntaActual = 0;
+        var respuestasSeleccionadas = {};
+
+        // Función para cargar el progreso almacenado en la cookie
+        function cargarProgresoDesdeCookie() {
+            var progresoCookie = Cookies.get('progresoCuestionario');
+
+            if (progresoCookie) {
+                respuestasSeleccionadas = JSON.parse(progresoCookie);
+
+                // Encuentra la primera pregunta no respondida
+                var primeraPreguntaNoRespondida = preguntas.length; // Asume que todas están respondidas
+                preguntas.each(function(index) {
+                    var idPregunta = $(this).find('.respuesta-btn').first().data('id-pregunta');
+                    if (!respuestasSeleccionadas[idPregunta]) {
+                        primeraPreguntaNoRespondida = Math.min(primeraPreguntaNoRespondida, index);
+                    }
+                });
+                 preguntaActual = primeraPreguntaNoRespondida;
+
+                // Actualizar la visualización de las respuestas seleccionadas
+                for (var idPregunta in respuestasSeleccionadas) {
+                    var respuestas = respuestasSeleccionadas[idPregunta];
+
+                    respuestas.forEach(function(idRespuesta) {
+                        $('.respuesta-btn[data-id-pregunta="' + idPregunta + '"][data-id-respuesta="' + idRespuesta + '"]').addClass('pregunta-resaltada');
+                    });
+                }
+
+                // Actualizar la cantidad de preguntas respondidas
+                actualizarBarraEstado();
+            }
+        }
+        // Llama a la función para cargar el progreso desde la cookie al inicio
+        cargarProgresoDesdeCookie();
+        notificarProgresoCargado();
+        mostrarPregunta(preguntaActual);
+        // Un objeto para rastrear las respuestas seleccionadas
+
+
+        // Función para mostrar la pregunta actual y sus respuestas seleccionadas
+        function mostrarPregunta(index) {
+        preguntas.hide(); // Oculta todas las preguntas
+        var pregunta = preguntas.eq(index);
+        pregunta.show();
+
+        // Restaura las respuestas seleccionadas de esta pregunta
+        var idPregunta = pregunta.find('.respuesta-btn').first().data('id-pregunta');
+        var respuestas = respuestasSeleccionadas[idPregunta];
+
+        if (respuestas) {
+            pregunta.find('.respuesta-btn').removeClass('pregunta-resaltada');
+            respuestas.forEach(function(idRespuesta) {
+                pregunta.find('.respuesta-btn[data-id-respuesta="' + idRespuesta + '"]').addClass('pregunta-resaltada');
+            });
+        }
+    }
+
+        // Función para actualizar la navegación
+        function actualizarNavegacion() {
+            $('#atras-btn').prop('disabled', preguntaActual === 0);
+            $('#siguiente-btn').prop('disabled', preguntaActual === preguntas.length - 1);
+        }
+
+        // Función para resaltar las respuestas seleccionadas en una pregunta
+        function restaurarRespuestasSeleccionadas(pregunta) {
+            var idPregunta = pregunta.data('id-pregunta');
+            var respuestas = respuestasSeleccionadas[idPregunta];
+
+            if (respuestas) {
+                // Deselecciona todas las respuestas
+                pregunta.find('.respuesta-btn').removeClass('pregunta-resaltada');
+
+                // Resalta las respuestas seleccionadas
+                respuestas.forEach(function(idRespuesta) {
+                    pregunta.find('.respuesta-btn[data-id-respuesta="' + idRespuesta + '"]').addClass('pregunta-resaltada');
+                });
+            }
+        }
+
+        // Manejar el clic en los botones de respuesta
+        $('.respuesta-btn').on('click', function() {
+        var idPregunta = $(this).data('id-pregunta');
+        var idRespuesta = $(this).data('id-respuesta');
+
+        if (!respuestasSeleccionadas[idPregunta]) {
+            respuestasSeleccionadas[idPregunta] = [];
+        }
+
+        if (respuestasSeleccionadas[idPregunta].includes(idRespuesta)) {
+            var index = respuestasSeleccionadas[idPregunta].indexOf(idRespuesta);
+            respuestasSeleccionadas[idPregunta].splice(index, 1);
+            $(this).removeClass('pregunta-resaltada');
+        } else {
+            respuestasSeleccionadas[idPregunta] = [idRespuesta];
+            $('.respuesta-btn[data-id-pregunta="' + idPregunta + '"]').removeClass('pregunta-resaltada');
+            $(this).addClass('pregunta-resaltada');
+        }
+
+        Cookies.set('progresoCuestionario', JSON.stringify(respuestasSeleccionadas), { expires: 7 });
+        actualizarBarraEstado();
+    });
+
+        // Manejar el clic en el botón "Siguiente"
+        $('#siguiente-btn').on('click', function() {
+            if (preguntaActual < preguntas.length - 1) {
+                preguntaActual++;
+                 Cookies.set('preguntaActual', preguntaActual, { expires: 7 });
+                mostrarPregunta(preguntaActual);
+                actualizarNavegacion();
+            }
+        });
+        function mostrarHistorialPreguntas() {
+        for (var i = 1; i < preguntaActual; i++) {
+            $('#pregunta-' + i).show();
+        }
+        }
+        // Manejar el clic en el botón "Atrás"
+        $('#atras-btn').on('click', function() {
+            if (preguntaActual > 0) {
+                preguntaActual--;
+                Cookies.set('preguntaActual', preguntaActual, { expires: 7 });
+                mostrarPregunta(preguntaActual);
+                actualizarNavegacion();
+            }
+            else {
+                // Si ya estamos en la primera pregunta, retroceder en el historial del navegador
+                    mostrarTodasLasPreguntasYRespuestas();
+            }
+        });
+
+        // Función para contar las respuestas totales
+        function contarRespuestasTotales() {
+            var contador = 0;
+            for (var idPregunta in respuestasSeleccionadas) {
+                contador += respuestasSeleccionadas[idPregunta].length;
+            }
+            return contador;
+        }
+
+        // Función para actualizar la barra de estado
+        function actualizarBarraEstado() {
+            var cantidadPreguntasRespondidas = contarRespuestasTotales();
+            $('#barra-estado').text('Estado Actual: ' + cantidadPreguntasRespondidas + ' Preguntas diligenciadas de un total de ' + cantidadTotalPreguntas);
+        }
+
+        // Inicializar la navegación
+        mostrarPregunta(preguntaActual);
+        actualizarNavegacion();
+    });
+</script>
+
+
+
+
+
+<script>
+    // Variables para llevar el seguimiento de preguntas respondidas
+    var cantidadTotalPreguntas = {{ preguntas_y_respuestas|length }};
+    var cantidadPreguntasRespondidas = 0;
+
+    // Función para actualizar la barra de estado
+    function actualizarBarraEstado() {
+        var barraEstado = $('#barra-estado');
+        barraEstado.text('Estado Actual: ' + cantidadPreguntasRespondidas + ' Preguntas diligenciadas de un total de ' + cantidadTotalPreguntas);
+    }
+
+    // Llama a esta función al inicio para mostrar la barra de estado inicial
+    actualizarBarraEstado();
+
+    // Manejar el clic en los botones de respuesta
+    $('.respuesta-btn').on('click', function() {
+        // Obtener la respuesta seleccionada
+        var respuestaSeleccionada = $(this).text();
+
+        // Actualizar la cantidad de preguntas respondidas
+        cantidadPreguntasRespondidas++;
+        actualizarBarraEstado();
+    });
+</script>
+
+<script>
+    // Función para establecer una cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+</script>
+<script>
+function notificarProgresoCargado() {
+    var progresoCookie = Cookies.get('progresoCuestionario');
+    if (progresoCookie) {
+        alert("Hemos cargado tus respuestas anteriores. Puedes continuar donde lo dejaste y devolverte haciendo clic ATRAS si deseas corregir algo.");
+        // O, para un mensaje estilizado, puedes agregar un div en tu HTML para mostrar el mensaje.
+        // $('#notificacionProgreso').text("Hemos cargado tus respuestas anteriores. Puedes continuar donde lo dejaste.").show();
+    }
+}
+</script>
+
+
+</html>

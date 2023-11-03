@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Pyme Cloud</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9b9797;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #818183;
+            color: #fff;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo img {
+        width: 450px;
+        height: 250px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center; /* Centra horizontalmente el logo */
+        align-items: center; /* Centra verticalmente el logo */
+        }
+
+        .header-content img {
+            margin-right: 10px; /* Espacio derecho entre el logo y el texto */
+        }
+        .header a.btn-danger { /* Estilo para el botón Cerrar Sesión */
+            background-color: #d9534f;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none; /* Quita el subrayado de enlace */
+            margin-right: 10px; /* Espacio derecho para separar del nombre del usuario */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #03101f;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"], /* Cambia el tipo de entrada para el número de empleados */
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        select {
+            appearance: none;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .btn-submit {
+            background-color: #4CAF50; /* Cambia el color del botón Registrar a verde */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block; /* Centra el botón */
+            margin: 0 auto; /* Centra el botón */
+        }
+        .btn-submit:hover {
+            background-color: #45a049; /* Cambia el color del botón Registrar al pasar el mouse */
+        }
+        .menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 0;
+        }
+        .menu ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        .menu ul li:last-child {
+            margin-right: 0;
+        }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .center-content {
+        text-align: center; /* Centra horizontalmente el contenido dentro del div */
+        margin: 10px auto; /* Centra horizontalmente el div en la página */
+        margin-bottom: 0px;
+        }
+        .checkbox-group {
+        display: flex; /* Utiliza flexbox para alinear elementos en línea */
+        align-items: center; /* Alinea verticalmente los elementos en el centro */
+        margin-bottom: 15px; /* Espacio entre los grupos de checkbox */
+        }
+
+        .checkbox-group label {
+            margin-left: 10px; /* Espacio a la izquierda del texto */
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin: 0; /* Elimina el margen predeterminado de los checkboxes */
+        }
+
+        /* Estilos para el modal */
+.modal {
+    display: none; /* Por defecto el modal está oculto */
+    position: fixed; /* Posición fija */
+    top: 0;
+    left: 0;
+    width: 100%;  /* Ocupa toda la anchura */
+    height: 100%;  /* Ocupa toda la altura */
+    overflow: auto;  /* Permite el desplazamiento si el contenido es demasiado grande */
+    background-color: rgba(0,0,0,0.4);  /* Fondo semitransparente */
+}
+.modal1 {
+    display: none; /* Por defecto el modal está oculto */
+    position: fixed; /* Posición fija */
+    top: 0;
+    left: 0;
+    width: 100%;  /* Ocupa toda la anchura */
+    height: 100%;  /* Ocupa toda la altura */
+    overflow: auto;  /* Permite el desplazamiento si el contenido es demasiado grande */
+    background-color: rgba(0,0,0,0.4);  /* Fondo semitransparente */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 20px;
+    width: 60%;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+.close1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    z-index: 1000;
+    display: none;  /* Inicialmente está oculto */
+}
+
+.cookie-banner button {
+    margin-left: 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+footer {
+        background-color: #333;
+        color: #333333;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="center-content">
+        <div class="logo img">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo spc" >
+        </div>
+    </div>
+
+    <div class="header">
+
+    <div class="header-content">
+
+        <p>Bienvenido, {{ user["name"] }}</p>
+        <p>E-mail Registrado, {{ user["preferred_username"] }}</p>
+    </div>
+    <a href="{{ url_for('login') }}" class="btn btn-danger">Cerrar Sesión</a>
+</div>
+
+    <div class="menu">
+        <ul>
+            <li><a href="#">Menú</a></li>
+
+        </ul>
+    </div>
+    <div class="container">
+        <h1>Formulario de Registro</h1>
+        <form id="registroForm">
+            <label for="nomPyme">Nombre de la PYME:</label>
+            <input type="text" id="nomPyme" name="nomPyme" required style="max-width: 200px;" >
+
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" name="telefono" pattern="[0-9]+" required style="max-width: 200px;"   title="Solo se permiten valores numéricos">
+
+            <label for="sector">Sector:</label>
+            <select id="sector" name="sector" required style="max-width: 310px;">
+            <option value="Tecnología de la Información (TI)">Tecnología de la Información (TI)</option>
+            <option value="Salud y Cuidado de la Salud">Salud y Cuidado de la Salud</option>
+            <option value="Educación">Educación</option>
+            <option value="Finanzas y Banca">Finanzas y Banca</option>
+            <option value="Manufactura">Manufactura</option>
+            <option value="Comercio Minorista">Comercio Minorista</option>
+            <option value="Construcción">Construcción</option>
+            <option value="Energía y Servicios Públicos">Energía y Servicios Públicos</option>
+            <option value="Agricultura">Agricultura</option>
+            <option value="Servicios Profesionales">Servicios Profesionales</option>
+            <option value="Alimentación y Bebidas">Alimentación y Bebidas</option>
+            <option value="Medios de Comunicación y Entretenimiento">Medios de Comunicación y Entretenimiento</option>
+            <option value="Turismo y Hospitalidad">Turismo y Hospitalidad</option>
+            <option value="Automoción">Automoción</option>
+            <option value="Bienes Raíces">Bienes Raíces</option>
+            <option value="Gobierno y Organizaciones sin Fines de Lucro">Gobierno y Organizaciones sin Fines de Lucro</option>
+            <option value="Medio Ambiente y Sostenibilidad">Medio Ambiente y Sostenibilidad</option>
+            <option value="Transporte y Logística">Transporte y Logística</option>
+            <option value="Arte y Cultura">Arte y Cultura</option>
+            <option value="Otro">Otro</option>
+            </select>
+
+            <label for="estadoActual">Estado Actual:</label>
+            <select id="estadoActual" name="estadoActual" required style="max-width: 200px;">
+            <option value="">Seleccione:</option>
+            <option value="1">Nube</option>
+            <option value="2">On-Premise</option>
+            </select>
+
+            <label for="tipoInfra" id="nivelLabel" style="display: none;">¿De que nivel desea preguntas ?:</label>
+            <select id="tipoInfra" name="tipoInfra" style="max-width: 200px; display: none;">
+                <option value="1">Alto Nivel</option>
+                <option value="2">Bajo Nivel</option>
+            </select>
+
+
+
+
+            <label for="numEmpleados">Número de Empleados:</label>
+            <input type="number" id="numEmpleados" name="numEmpleados" required style="max-width: 100px;" >
+
+            <label for="nomUsuario" >Email a registrar en sistema:</label>
+            <input type="text" name="nomUsuario" id="nomUsuario" value="{{ user["preferred_username"] }}" readonly required style="max-width: 310px; ">
+
+
+            <label for="cargo">Cargo:</label>
+            <input type="text" id="cargo" name="cargo" required style="max-width: 200px;">
+
+            <div class="checkbox-group">
+            <input type="checkbox" id="terminosCond" name="terminosCond" value="1">
+            <label for="terminosCond"> </label>
+                <a href="#" id="terminosCondLink">Acepto los términos y condiciones</a>
+            </div>
+
+            <div class="checkbox-group">
+            <input type="checkbox" id="terminosDatos" name="terminosDatos" value="1">
+            <label for="terminosDatos"> </label>
+                <a href="#" id="terminosDatosLink">Acepto la política de datos</a>
+            </div>
+
+            <!-- Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>Términos y Condiciones de Uso de Secure Pyme Cloud
+                    Última Actualización: [Fecha de la última actualización]
+                    Bienvenido a Secure Pyme Cloud. Estos términos y condiciones ("Términos") rigen el acceso y uso de nuestro sitio web y servicios relacionados (en adelante, el "Servicio"). Al utilizar nuestro Servicio, aceptas cumplir con estos Términos. Si no estás de acuerdo con estos Términos, no debes utilizar nuestro Servicio.
+                    1. Aceptación de los Términos
+                    Al acceder o utilizar nuestro Servicio, aceptas y reconoces que has leído, comprendido y aceptado estos Términos, así como nuestra Política de Privacidad.
+                    2. Uso del Servicio
+                    2.1. Registro de Cuenta: Puedes necesitar registrarte para acceder a ciertas partes de nuestro Servicio. Al registrarte, debes proporcionar información precisa y completa, y es tu responsabilidad mantenerla actualizada.
+                    2.2. Seguridad de la Cuenta: Eres responsable de mantener la seguridad de tu cuenta y contraseña. Debes notificarnos cualquier uso no autorizado de tu cuenta.
+                    2.3. Uso Adecuado: No debes utilizar nuestro Servicio de manera que viole leyes aplicables o derechos de terceros. No debes interferir con la seguridad o integridad de nuestro Servicio.
+                    3. Propiedad Intelectual
+                    3.1. Derechos de Autor: Todos los contenidos, marcas registradas y derechos de autor en nuestro Servicio son propiedad de Secure Pyme Cloud o de sus licenciantes y están protegidos por leyes de propiedad intelectual.
+                    3.2. Licencia Limitada: Te otorgamos una licencia limitada, no exclusiva y no transferible para usar nuestro Servicio de acuerdo con estos Términos.
+                    4. Limitación de Responsabilidad
+                    4.1. Uso bajo tu Propio Riesgo: Utilizas nuestro Servicio bajo tu propio riesgo. No garantizamos que el Servicio sea seguro, sin errores o esté libre de virus u otros componentes perjudiciales.
+                    4.2. Exención de Responsabilidad: No somos responsables de los daños directos, indirectos, incidentales, especiales o consecuentes que surjan del uso de nuestro Servicio.
+                    5. Cambios en los Términos
+                    Nos reservamos el derecho de modificar estos Términos en cualquier momento. Te recomendamos revisar estos Términos regularmente para estar al tanto de las actualizaciones.
+                    6. Ley Aplicable y Jurisdicción
+                    Estos Términos se regirán e interpretarán de acuerdo con las leyes del [tu país/estado], y cualquier disputa que surja de estos Términos estará sujeta a la jurisdicción exclusiva de los tribunales de [tu ciudad/país].</p>
+                    <button id="aceptarBtn">Acepto los términos y condiciones</button>
+                </div>
+            </div>
+
+            <div id="myModal1" class="modal1">
+                <div class="modal-content">
+                    <span class="close1">&times;</span>
+                    <p>Política de Tratamiento de Datos Personales
+                    Última Actualización: [10 octubre 2023]
+                    1.	Legalidad: El tratamiento de datos personales se gestionará de acuerdo con el marco regulatorio aplicables.
+                        2.	Finalidad: Los titulares de los datos serán informados clara, suficiente y previamente sobre la finalidad del tratamiento de sus datos. Los datos personales recolectados se utilizarán para el siguiente propósito específico el cual está permitido por la regulación aplicable en Colombia:
+
+3•	Identificar y relacionar la PYME que está utilizando la herramienta
+4•	Gestionar los servicios relacionados con las funciones de la herramienta
+5•	Dar a conocer los servicios y ofrecer oportunidades de negocio ofrecidos por SECURE PYME CLOUD
+6•	Participar en eventos organizados por SECURE PYME CLOUD
+7•	Participar en capacitaciones, cursos, seminarios organizados por SECURE PYME CLOUD
+8•	Invitar a eventos comerciales, dar a conocer productos y servicios
+9•	Evaluar la calidad de los servicios de SECURE PYME CLOUD
+10•	Como titular de información tiene derecho a conocer, actualizar y rectificar sus datos personales y, sólo en los casos en que sea procedente, a suprimirlos o revocar la autorización otorgada para su tratamiento.
+
+11.	Libertad: Los datos personales se recolectan con la autorización previamente, expresa e informada del titular.
+12.	Veracidad o Calidad: La información de tratamiento de datos personales es precisa, completa, actualizada, verificable y comprensible. Se prohíbe el tratamiento de datos parciales, incompletos o que induzcan a error.
+
+13.	Transparencia: Se garantizará el derecho del titular a obtener información en cualquier momento y sin restricciones sobre cualquier información personal que sea de su interés o titularidad.
+
+14.	Acceso y circulación restringida: Los datos personales que no se encuentran dentro de la categoría de datos públicos, no están disponibles en internet ni en otros medios de comunicación masiva, y el tratamiento se gestionará de acuerdo con el marco regulatorio.
+
+15.	Seguridad: Se implementan el enfoque de seguridad necesarias para prevenir la pérdida, de confidencialidad, integridad, disponibilidad, consulta o uso fraudulento de los datos personales.
+
+16.	Confidencialidad: SECURE PYME CLOUD esta comprometido con la no divulgación de la información en materia de protección de datos personales.
+
+17.	Tratamiento de datos de empleados, funcionarios, contratistas y demás colaboradores de SECURE PYME CLOUD: Gestionar procesos de selección y vinculación de personas, administrar los recursos humanos, crear y gestionar credenciales de los colaboradores en sistemas de información, realizar pagos y contratar beneficios laborales, entre otras actividades en materia de gestión de personal.
+
+18.	Clientes y Usuarios: Comunicar, comercializar y gestionar los servicios de SECURE PYME CLOUD, como reservas, actividades desarrolladas, enviar información sobre cambios en servicios y productos, entre otros relacionados con lo clientes y usuarios.
+
+19.	Proveedores y Contratistas: Registrar, comunicar, actualizar, contactar contratistas y proveedores, para formalizar vínculos contractuales, comerciales, capacitar, entrenar a terceros en gestión comercial, evaluar el desempeño de proveedores y contratistas, entre otros aspectos relacionados con proveedores y contratistas.
+
+20.	Estrategia comercial, alianzas y colaboraciones empresariales: Contactar, compartir información, gestionar comunicación con terceros aliados, para ofrecer servicios y productos, realizar actividades de marketing y promoción, transferir la información a distintas áreas de SECURE PYME CLOUD y compañías aliadas.
+21.	Gestión administrativa, auditoría y evaluación de cumplimiento: Registrar ingresos, gestión de acceso físico y lógico a SECURE PYME CLOUD, evaluar calidad del servicio, llevar a cabo auditorías internas o externas, responder a consultas, peticiones, reclamos, denuncias y felicitaciones entre otros relacionados con la gestión administrativa y de cumplimiento.
+
+22.	Derechos de los niños, niñas y adolescentes: SECURE PYME CLOUD  evita en lo posible la recolección de datos personales de niños, niñas y adolescentes, pero si se llegarán a recolectar serán tratados con especial protección, respetando sus derechos prevalentes y tomando en cuenta su nivel de madurez y entendimiento.
+
+23.	PROGRAMA DE TRATAMIENTO DE DATOS PERSONALES "ACCOUNTABILITY": SECURE PYME CLOUD identifica y gestiona los activos de información, determinará las actividades que involucran datos personales, identificará las fuentes de captura de datos, las bases de datos y los usuarios con acceso, y establecerá mecanismos para la disposición o eliminación de datos personales.
+
+                    24. Transferencia de Datos Personales
+                    No compartimos datos personales con terceros no autorizados. Cuando sea necesario, obtendremos el consentimiento explícito de los titulares antes de realizar transferencias.
+                    25. Consentimiento
+                    Al utilizar nuestros servicios, aceptas el tratamiento de tus datos personales de acuerdo con esta política.
+                    26. Cambios en la Política
+                    Nos reservamos el derecho de modificar esta política en cualquier momento. Cualquier cambio será notificado a los usuarios y publicado en nuestro sitio web.
+                    27. Contacto
+                    Si tienes preguntas o inquietudes sobre esta política, o si deseas ejercer tus derechos de protección de datos, contáctanos a través de [spcloudtg@hotmail.com].</p>
+                    <button id="aceptarBtn1">Acepto la politica de datos</button>
+                </div>
+            </div>
+
+
+            <input type="button" value="Registrar" class="btn-submit" id="registrarBtn">
+        </form>
+    </div>
+
+    <div class="cookie-banner">
+    Aviso sobre el uso de cookies en SPC Secure Pyme Cloud
+
+    Al ingresar y utilizar nuestro sitio web, aceptas el uso de cookies. En SPC, utilizamos cookies para garantizar que te ofrecemos la mejor experiencia posible y para asegurar el correcto funcionamiento de nuestra plataforma,
+        especialmente en lo que respecta al almacenamiento y mantenimiento de tus datos. Estas cookies nos permiten mejorar nuestros servicios y asegurar que las funcionalidades se presenten de manera óptima.
+        Si deseas obtener más información sobre cómo usamos las cookies o cómo gestionarlas, por favor consulta nuestra Política de Privacidad.
+
+    Agradecemos tu comprensión y confianza en SPC.
+    <button onclick="aceptarCookies()">Aceptar todas la cookies</button>
+</div>
+
+<script>
+    function aceptarCookies() {
+    document.querySelector('.cookie-banner').style.display = 'none';
+    // Aquí puedes guardar en el local storage que el usuario aceptó las cookies si lo deseas
+    localStorage.setItem('cookiesAceptadas', 'true');
+}
+
+// Mostrar el banner de cookies si el usuario no lo ha aceptado previamente
+window.onload = function() {
+    if (!localStorage.getItem('cookiesAceptadas')) {
+        document.querySelector('.cookie-banner').style.display = 'block';
+    }
+}
+</script>
+    <script>
+    var registrarBtn = document.getElementById("registrarBtn");
+
+    registrarBtn.addEventListener("click", function (e) {
+        e.preventDefault(); // Evitar el envío predeterminado del formulario
+
+        var checkboxTerms = document.getElementById("terminosCond");
+        var checkboxData = document.getElementById("terminosDatos");
+
+        if (checkboxTerms.checked && checkboxData.checked) {
+            // Recopila los datos del formulario
+            const formData = new FormData(document.getElementById("registroForm"));
+            let query = "";
+            // Muestra los datos en la consola
+            for (const pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+                query += `${pair[0]}: ${pair[1]}\n`;
+            }
+            console.log("Intentando establecer conexión a la base de datos...");
+
+            // Envía los datos al servidor usando AJAX (JavaScript)
+            fetch("http://ec2-54-242-76-154.compute-1.amazonaws.com:5002/guardar_datos", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Datos guardados correctamente");
+                    // Redirige a la página deseada después de enviar el formulario
+                    window.location.href = "http://ec2-54-242-76-154.compute-1.amazonaws.com:5003/api/preguntas";
+                } else {
+                    alert("Error al guardar datos en la bd");
+                    // Puedes habilitar esto si deseas mostrar el query en caso de error
+                    // alert("Query enviado:\n" + query);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Puedes redirigir a la página de confirmación independientemente del error
+                alert("Datos registrados exitosamente");
+                window.location.href = "http://ec2-54-242-76-154.compute-1.amazonaws.com:5003/api/preguntas";
+            });
+        } else {
+            alert("Debes aceptar los términos y condiciones y la política de datos antes de registrar este formulario.");
+        }
+    });
+</script>
+
+
+    <script>
+        var estadoActualSelect = document.getElementById("estadoActual");
+        var nivelLabel = document.getElementById("nivelLabel");
+        var nivelSelect = document.getElementById("tipoInfra");
+
+        // Agregar un evento 'change' al elemento estadoActualSelect
+        estadoActualSelect.addEventListener("change", function() {
+            // Obtener el valor seleccionado en estadoActualSelect
+            var estadoActualValue = estadoActualSelect.value;
+
+            // Si se selecciona "Nube" (valor 2), mostrar el campo "nivel"
+            if (estadoActualValue === "2" || estadoActualValue === "1") {
+                nivelLabel.style.display = "block";
+                nivelSelect.style.display = "block";
+            } else {
+                // Ocultar el campo "nivel" para otras opciones
+                nivelLabel.style.display = "none";
+                nivelSelect.style.display = "none";
+            }
+        });
+    </script>
+
+    <script>
+         document.getElementById("registroForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Evita el envío predeterminado del formulario
+
+        // Recopila los datos del formulario
+        const formData = new FormData(this);
+        let query = "";
+        // Muestra los datos en la consola
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+            query += `${pair[0]}: ${pair[1]}\n`;
+        }
+        console.log("Intentando establecer conexión a la base de datos...");
+
+        // Envía los datos al servidor usando AJAX (JavaScript)
+        fetch("http://ec2-54-242-76-154.compute-1.amazonaws.com:5002/guardar_datos", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Datos guardados correctamente");
+            } else {
+                alert("Error al guardar datos en la bd");
+                // Puedes habilitar esto si deseas mostrar el query en caso de error
+                 alert("Query enviado:\n" + query);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            // Puedes redirigir a la página de confirmación independientemente del error
+            alert("Datos registrados exitosamente");
+            window.location.href = "http://ec2-54-242-76-154.compute-1.amazonaws.com:5003/api/preguntas";
+        });
+    });
+    </script>
+
+    <script>
+                // Definir las variables de los modales
+        var modal = document.getElementById("myModal");
+        var modal1 = document.getElementById("myModal1");
+
+        // Evento para mostrar el modal de términos y condiciones
+        document.getElementById("terminosCondLink").addEventListener("click", function (e) {
+            e.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+
+            // Mostrar el modal correspondiente
+            modal.style.display = "block";
+        });
+
+        // Evento para mostrar el modal de política de datos
+        document.getElementById("terminosDatosLink").addEventListener("click", function (e) {
+            e.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+
+            // Mostrar el modal correspondiente
+            modal1.style.display = "block";
+        });
+
+        // Evento para cerrar el modal de términos y condiciones
+        document.querySelector(".modal .close").addEventListener("click", function () {
+            // Ocultar el modal correspondiente
+            modal.style.display = "none";
+        });
+
+        // Evento para cerrar el modal de política de datos
+        document.querySelector(".modal1 .close1").addEventListener("click", function () {
+            // Ocultar el modal correspondiente
+            modal1.style.display = "none";
+        });
+
+        // Evento para el botón "Aceptar términos y condiciones" del modal de términos
+        document.getElementById("aceptarBtn").addEventListener("click", function () {
+            // Aquí puedes agregar el código que deseas ejecutar al aceptar los términos y condiciones
+            // Por ejemplo, puedes habilitar el envío del formulario aquí
+            // También puedes cerrar el modal si es necesario
+            modal.style.display = "none";
+        });
+
+        // Evento para el botón "Aceptar política de datos" del modal de política de datos
+        document.getElementById("aceptarBtn1").addEventListener("click", function () {
+            // Aquí puedes agregar el código que deseas ejecutar al aceptar la política de datos
+            // Por ejemplo, puedes habilitar el envío del formulario aquí
+            // También puedes cerrar el modal si es necesario
+            modal1.style.display = "none";
+        });
+    </script>
+
+
+
+    </div>
+<footer>
+        <div class="container">
+            <p>&copy; 2023 Secure Pyme Cloud - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>

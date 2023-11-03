@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+#pregunta-container {
+    margin-top: 20px;
+}
+
+#respuesta-form {
+    margin-top: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+}
+
+#log-container {
+    margin-top: 20px;
+}
+
+#log-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#log-list li {
+    margin-bottom: 10px;
+}

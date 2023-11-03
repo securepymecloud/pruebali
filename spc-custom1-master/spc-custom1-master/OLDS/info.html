@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Información Consultadas</title>
+</head>
+<body>
+    <h1>Información Consultada lista</h1>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+        </tr>
+        {% for row in info %}
+        <tr>
+            <td>{{ row.nombre }}</td>
+            <td>{{ row.apellido }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

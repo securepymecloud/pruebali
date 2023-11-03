@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPC-Menu Principal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9b9797;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #818183;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header a.btn-danger { /* Estilo para el botón Cerrar Sesión */
+            background-color: #d9534f;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none; /* Quita el subrayado de enlace */
+            margin-right: -80px; /* Espacio derecho para separar del nombre del usuario */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #03101f;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        select {
+            appearance: none;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .btn-submit {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 0;
+        }
+        .menu ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        .menu ul li:last-child {
+            margin-right: 0;
+        }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        footer {
+        background-color: #333;
+        color: #333333;
+        padding: 10px 0;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h4> <img src="{{ url_for('static', filename='logo.png') }}" alt="logo spc"  width="450" height="250"></h4>
+        <p>Bienvenido, {{ session["user"]["name"] }}</p>
+        <p>E-mail Registrado, {{ session["user"]["preferred_username"] }}</p>
+        <p>Ultimo acceso registrado, {{ session['fechasesion']}} </p>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+
+    </div>
+    <div class="menu">
+        <ul>
+            <li><a href="#">Menú</a></li>
+            <li><a href="http://ec2-54-242-76-154.compute-1.amazonaws.com:5001/get_user_data">Perfil</a></li>
+            <li><a href="/cuestionario" class="btn btn-primary">Cuestionario</a></li>
+            <li><a href="http://ec2-54-242-76-154.compute-1.amazonaws.com:5005/api/reporte">Reporte</a></li>
+
+        </ul>
+    </div>
+
+
+
+
+    <div class="container" style="text-align: center;">
+        <p><strong>ID de registro:</strong><br> {{ user_data_dict.idFormularioin }}</p>
+        <p><strong>Nombre PYME:</strong><br> {{ user_data_dict.nomPyme }}</p>
+        <p><strong>Sector PYME:</strong><br> {{ user_data_dict.sector }}</p>
+        <p><strong>Teléfono:</strong><br> {{ user_data_dict.telefono }}</p>
+        <p><strong>Estado Actual:</strong><br>
+        {% if user_data_dict.estadoActual == 1 %}
+            Ha seleccionado el estado actual de la pyme en riesgos.
+        {% else %}
+            Ha seleccionado el estado actual de la pyme en Seguridad.
+        {% endif %}
+        </p>
+        <p><strong>Cantidad de Empleados:</strong><br> {{ user_data_dict.numEmpleados }}</p>
+        <p><strong>Cargo:</strong><br> {{ user_data_dict.cargo }}</p>
+
+
+        <p><strong>Nivel infraestructura:</strong><br>
+        {% if user_data_dict.tipoInfra == 1 %}
+            Ha seleccionado responder cuestionario de Alto nivel.
+        {% else %}
+            Ha seleccionado responder cuestionario de bajo nivel.
+        {% endif %}
+        </p>
+
+
+    </div>
+<footer>
+        <div class="container">
+            <p>&copy; 2023 Secure Pyme Cloud - Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>
