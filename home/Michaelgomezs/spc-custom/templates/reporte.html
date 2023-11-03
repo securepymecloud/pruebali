@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPC-Reporte</title>
+
+
+
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9b9797;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #818183;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header a.btn-danger { /* Estilo para el botón Cerrar Sesión */
+            background-color: #d9534f;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none; /* Quita el subrayado de enlace */
+            margin-right: -80px; /* Espacio derecho para separar del nombre del usuario */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .container2 {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 14px;  /* Ajustar el tamaño de fuente aquí */
+        }
+        .container3 {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #c2bebe;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 14px;  /* Ajustar el tamaño de fuente aquí */
+        }
+        h1 {
+            text-align: center;
+            color: #03101f;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        select {
+            appearance: none;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+        }
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .btn-submit {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 0;
+        }
+        .menu ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        .menu ul li:last-child {
+            margin-right: 0;
+        }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+         /* Estilo para los botones de respuesta */
+       .respuesta-btn {
+            background-color: #3f749a;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px; /* Espacio debajo de los botones */
+            display: block; /* Hacer que los botones se muestren en líneas separadas */
+            width: 100%; /* Ocupar todo el ancho del contenedor */
+        }
+        /* Estilo para ocultar todas las preguntas, excepto la activa */
+        .pregunta {
+            display: none;
+        }
+
+        /* Estilo para mostrar la pregunta activa */
+        .pregunta-activa {
+            display: block;
+        }
+        /* Para mostrar los botones en línea horizontalmente */
+        .respuestas {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Estilo para el botón "Atrás" */
+        #atras-btn {
+            background-color: #8c0325; /* Azul brillante */
+            color: #fff; /* Texto blanco */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px; /* Espacio entre botones */
+        }
+
+        /* Estilo para el botón "Siguiente" */
+        #siguiente-btn {
+            background-color: #033259; /* Azul oscuro */
+            color: #fff; /* Texto blanco */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Estilo al pasar el cursor sobre los botones */
+        #atras-btn:hover,
+        #siguiente-btn:hover {
+            background-color: #050228; /* Cambio de tono al pasar el cursor */
+        }
+        /* Estilo para resaltar la pregunta seleccionada */
+        .pregunta-resaltada {
+            background-color: #04314b; /* rosa */
+        }
+        footer {
+        background-color: #333;
+        color: #333333;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+     /* Estilo para la tabla */
+.table {
+    width: 80%;
+    border-collapse: collapse;
+    background-color: #be9e9e; /* Fondo blanco */
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+/* Estilo para las celdas de la tabla */
+.table-cell {
+    max-width: 200px; /* Puedes ajustar el porcentaje según tus necesidades */
+    border-collapse: collapse;
+    padding: 10px;
+    border: 1px solid #033259;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* Estilo para las celdas de encabezado */
+.table th {
+    background-color: #333;
+    color: #033259;
+    text-align: center;
+    padding: 10px;
+}
+.custom-table {
+    width: 80%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.27); /* Fondo blanco */
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    font-size: 16px;
+    margin: 0 auto; /* Centra la tabla horizontalmente */
+}
+
+/* Estilo para las celdas de la tabla */
+.custom-table-cell {
+    max-width: 200px; /* Puedes ajustar el ancho según tus necesidades */
+    border-collapse: collapse;
+    padding: 10px;
+    border: 1px solid #033259;
+    text-align: center;
+    margin: 0 auto; /* Centra las celdas horizontalmente */
+}
+footer p {
+    margin: 0;
+}
+
+.estado-1 {
+    background-color: red;
+}
+
+.estado-2 {
+    background-color: #FF6961;  /* Rojo medio */
+}
+
+.estado-3 {
+    background-color: #eea131;  /* Rojo fusión amarillo */
+}
+
+.estado-4 {
+    background-color: #eeda09;  /* Amarillo verde */
+}
+
+.estado-5 {
+    background-color: #95c00f;
+}
+
+.estado-6 {
+    background-color: #00ee00;  /* Verde fuerte */
+}
+.table1 {
+            width: 70%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        .table1 th, .table1 td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        .table1 th {
+            background-color: #ccc;
+        }
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+</style>
+
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <!-- Contenido de tu página -->
+
+  <!-- Incluir jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Incluir Bootstrap JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="header">
+        <h4> <img src="{{ url_for('static', filename='logo.png') }}" alt="logo spc"  width="450" height="250"></h4>
+        <p>Ultimo acceso registrado, {{ session['fechasesion']}} </p>
+         <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+    </div>
+    <div class="menu">
+        <ul>
+            <li><a href="#">Menú</a></li>
+            <li><a href="https://michaelgomezs.pythonanywhere.com/get_user_data">Perfil</a></li>
+            <li><a href="/api/preguntas">Cuestionario</a></li>
+            <li><a href="/api/reporte">Reporte</a></li>
+        </ul>
+    </div>
+
+<div id="content">
+
+
+        <div class="container2">
+        {% if valorestado == 1 %}
+            <p>
+                <h2>Diagnóstico realizado en riesgo</h2> El diagnóstico se fundamenta en el marco de referencia ISO y NIST, lo que permite evaluar el nivel de madurez en ciberseguridad de las PYMES que han adoptado la nube. A continuación, se presenta un informe que aborda las preguntas y respuestas relacionadas con su nivel actual, las recomendaciones para aumentar su madurez y el estado al que podrían llegar con su implementación.
+            </p>
+        {% else %}
+            <p>
+                <h2>Diagnóstico realizado en seguridad</h2> El diagnóstico se fundamenta en el marco de referencia ISO y NIST, lo que permite evaluar el nivel de madurez en ciberseguridad de las PYMES que quieren adoptar la nube. A continuación, se presenta un informe que aborda las preguntas y respuestas relacionadas con su nivel actual, las recomendaciones para aumentar su madurez y el estado al que podrían llegar con su implementación antes de la migración.
+            </p>
+        {% endif %}
+        </div>
+        <br>
+
+
+
+
+<div class="container3">
+{% if valorestado == 1 %}
+    <table class="table1">
+        <h2> Análisis de los estados del nivel de madurez</h2>
+        <thead>
+            <tr>
+                <th>Estado</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: red;">
+                <td>1</td>
+                <td>Infraestructura y medidas de seguridad muy deficientes. Alto riesgo y no cumple con ISO/NIST.</td>
+            </tr>
+            <tr style="background-color: #FF6961;">
+                <td>2</td>
+                <td>Infraestructura deficiente y medidas de seguridad mínimas. Mejoras necesarias para cumplir con ISO/NIST.</td>
+            </tr>
+            <tr style="background-color: #eea131;">
+                <td>3</td>
+                <td>Infraestructura y medidas de seguridad moderadas. Se requieren ajustes para alcanzar estándares ISO/NIST.</td>
+            </tr>
+            <tr style="background-color: #eeda09;">
+                <td>4</td>
+                <td>Cumple con algunos estándares ISO/NIST pero con áreas de mejora identificadas.</td>
+            </tr>
+            <tr style="background-color: #95c00f;">
+                <td>5</td>
+                <td>Infraestructura y medidas de seguridad sólidas. Pocos ajustes necesarios para optimizar según ISO/NIST.</td>
+            </tr>
+            <tr style="background-color: #00ee00;">
+                <td>6</td>
+                <td>Infraestructura y medidas de seguridad excelentes. Totalmente en línea con las recomendaciones de ISO/NIST.</td>
+            </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <table class="table1">
+        <h2> Análisis de los estados del nivel de madurez</h2>
+        <thead>
+            <tr>
+                <th>Estado</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: red;">
+            <td>1</td>
+            <td>Infraestructura On-premise y medidas de seguridad muy deficientes. Alto riesgo y no cumple con ISO/NIST.</td>
+        </tr>
+        <tr style="background-color: #FF6961;">
+            <td>2</td>
+            <td>Infraestructura On-premise deficiente y medidas de seguridad mínimas. Mejoras necesarias para cumplir con ISO/NIST.</td>
+        </tr>
+        <tr style="background-color: #eea131;">
+            <td>3</td>
+            <td>Infraestructura On-premise y medidas de seguridad moderadas. Se requieren ajustes para alcanzar estándares ISO/NIST.</td>
+        </tr>
+        <tr style="background-color: #eeda09;">
+            <td>4</td>
+            <td>Infraestructura On-premise cumple con algunos estándares ISO/NIST pero con áreas de mejora identificadas.</td>
+        </tr>
+        <tr style="background-color: #95c00f;">
+            <td>5</td>
+            <td>Infraestructura On-premise y medidas de seguridad sólidas. Pocos ajustes necesarios para optimizar según ISO/NIST.</td>
+        </tr>
+        <tr style="background-color: #00ee00;">
+            <td>6</td>
+            <td>Infraestructura On-premise y medidas de seguridad excelentes. Totalmente en línea con las recomendaciones de ISO/NIST.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {% endif %}
+</div>
+<br>
+
+<div class="container">
+<h1>Informe con recomendaciones</h1>
+
+    <table class="custom-table">
+    <thead>
+
+        {% if valorestado == 1 %}
+        <tr>
+            <th class="custom-table-cell">Función</th>
+            <th class="custom-table-cell">Dominio</th>
+            <th class="custom-table-cell">Pregunta de Riesgo</th>
+            <th class="custom-table-cell">Respuesta de Riesgo seleccionada</th>
+            <th class="custom-table-cell">Estado actual en el que se encuentra</th>
+            <th class="custom-table-cell">Recomendación para incrementar el nivel de madurez</th>
+            <th class="custom-table-cell">Estado al que pasaras con la recomendación</th>
+
+        </tr>
+        {% else %}
+        <tr>
+            <th class="custom-table-cell">Función</th>
+            <th class="custom-table-cell">Dominio</th>
+            <th class="custom-table-cell">Pregunta de Seguridad</th>
+            <th class="custom-table-cell">Respuesta de Seguridad seleccionada</th>
+            <th class="custom-table-cell">Estado actual en el que se encuentra</th>
+            <th class="custom-table-cell">Recomendacion para incrementar el nivel de madurez</th>
+            <th class="custom-table-cell">Estado al que pasaras con la recomendación</th>
+
+        </tr>
+        {% endif %}
+
+
+    </thead>
+    <tbody>
+        {% for row in resultados %}
+        <tr>
+            <td class="custom-table-cell">{{ row[0] }}</td>
+            <td class="custom-table-cell">{{ row[1] }}</td>
+            <td class="custom-table-cell">{{ row[2] }}</td>
+            <td class="custom-table-cell">{{ row[3] }}</td>
+            <td class="custom-table-cell {% if row[4] == 1 %}estado-1{% elif row[4] == 2 %}estado-2{% elif row[4] == 3 %}estado-3{% elif row[4] == 4 %}estado-4{% elif row[4] == 5 %}estado-5{% elif row[4] == 6 %}estado-6{% endif %}">{{ row[4] }}</td>
+            <td class="custom-table-cell">{{ row[5] }}</td>
+            <td class="custom-table-cell {% if row[6] == 1 %}estado-1{% elif row[6] == 2 %}estado-2{% elif row[6] == 3 %}estado-3{% elif row[6] == 4 %}estado-4{% elif row[6] == 5 %}estado-5{% elif row[6] == 6 %}estado-6{% endif %}">{{ row[6] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+<br>
+
+    <style>
+    /* Centra el contenido de la tabla y la tabla misma */
+    table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    th, td {
+      text-align: center;
+    }
+
+    /* Centra el título */
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<div class="container2">
+<h2>Nivel de madurez actual</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Categoría</th>
+      <th>Nivel</th>
+        <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nivel de madurez por la función:"Proteger"</td>
+      <td id="promedio-proteger"></td>
+      <td id="barra-proteger"></td>
+    </tr>
+    <tr>
+      <td>Nivel de madurez por la función: "Detectar"</td>
+      <td id="promedio-detectar"></td>
+      <td id="barra-detectar"></td>
+    </tr>
+    <tr>
+      <td>Nivel de madurez por la función:"Identificar"</td>
+      <td id="promedio-identificar"></td>
+      <td id="barra-identificar"></td>
+    </tr>
+    <tr>
+      <td>Nivel de madurez por la función:"Responder"</td>
+      <td id="promedio-responder"></td>
+      <td id="barra-responder"></td>
+    </tr>
+    <tr>
+      <td>Nivel de madurez por la función:"Recuperar"</td>
+      <td id="promedio-recuperar"></td>
+      <td id="barra-recuperar"></td>
+    </tr>
+    <!-- Más categorías aquí si es necesario -->
+  </tbody>
+</table>
+</div>
+        <!-- Tabla de promedios -->
+    <style>
+  td[id^="barra-"] {
+    width: 100px;
+    height: 20px;
+  }
+</style>
+
+<br>
+
+   <!-- tabla de promedios en dominio -->
+    <style>
+    /* Centra el contenido de la tabla y la tabla misma */
+    table {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    th, td {
+      text-align: center;
+    }
+
+    /* Centra el título */
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<div class="container2">
+<h2>Nivel de madurez actual basado en dominios</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Categoría</th>
+      <th> </th>
+        <th> Nivel</th>
+        <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+  <td>Gestión de activos</td>
+  <td id="gestión de activos"></td>
+  <td id="promedio-gestión de activos"></td>
+  <td id="barra-gestión de activos"></td>
+</tr>
+<tr>
+  <td>Entorno y ambiente del negocio</td>
+  <td id="entorno y ambiente del negocio"></td>
+  <td id="promedio-entorno y ambiente del negocio"></td>
+  <td id="barra-entorno y ambiente del negocio"></td>
+</tr>
+<tr>
+  <td>Gobierno</td>
+  <td id="gobierno"></td>
+  <td id="promedio-gobierno"></td>
+  <td id="barra-gobierno"></td>
+</tr>
+<tr>
+  <td>Evaluación de riesgos</td>
+  <td id="evaluación de riesgos"></td>
+  <td id="promedio-evaluación de riesgos"></td>
+  <td id="barra-evaluación de riesgos"></td>
+</tr>
+<tr>
+  <td>Estrategia de gestión de riesgos</td>
+  <td id="estrategia de gestión de riesgos"></td>
+  <td id="promedio-estrategia de gestión de riesgos"></td>
+  <td id="barra-estrategia de gestión de riesgos"></td>
+</tr>
+<tr>
+  <td>Gestión de riesgos de la cadena de suministro</td>
+  <td id="gestión de riesgos de la cadena de suministro"></td>
+  <td id="promedio-gestión de riesgos de la cadena de suministro"></td>
+  <td id="barra-gestión de riesgos de la cadena de suministro"></td>
+</tr>
+<tr>
+  <td>Gestión de identidad, autenticación y control de acceso</td>
+  <td id="gestión de identidad, autenticación y control de acceso"></td>
+  <td id="promedio-gestión de identidad, autenticación y control de acceso"></td>
+  <td id="barra-gestión de identidad, autenticación y control de acceso"></td>
+</tr>
+<tr>
+  <td>Gestión de identidad y control de acceso</td>
+  <td id="gestión de identidad y control de acceso"></td>
+  <td id="promedio-gestión de identidad y control de acceso"></td>
+  <td id="barra-gestión de identidad y control de acceso"></td>
+</tr>
+<tr>
+  <td>Procesos y procedimientos de protección de la información</td>
+  <td id="procesos y procedimientos de protección de la información"></td>
+  <td id="promedio-procesos y procedimientos de protección de la información"></td>
+  <td id="barra-procesos y procedimientos de protección de la información"></td>
+</tr>
+<tr>
+  <td>Tecnología para la protección</td>
+  <td id="tecnología para la protección"></td>
+  <td id="promedio-tecnología para la protección"></td>
+  <td id="barra-tecnología para la protección"></td>
+</tr>
+<tr>
+  <td>Concientización y Capacitación</td>
+  <td id="concientización y capacitación"></td>
+  <td id="promedio-concientización y capacitación"></td>
+  <td id="barra-concientización y capacitación"></td>
+</tr>
+<tr>
+  <td>Seguridad de datos</td>
+  <td id="seguridad de datos"></td>
+  <td id="promedio-seguridad de datos"></td>
+  <td id="barra-seguridad de datos"></td>
+</tr>
+<tr>
+  <td>Mantenimiento</td>
+  <td id="mantenimiento"></td>
+  <td id="promedio-mantenimiento"></td>
+  <td id="barra-mantenimiento"></td>
+</tr>
+<tr>
+  <td>Monitoreo continuo de seguridad</td>
+  <td id="monitoreo continuo de seguridad"></td>
+  <td id="promedio-monitoreo continuo de seguridad"></td>
+  <td id="barra-monitoreo continuo de seguridad"></td>
+</tr>
+<tr>
+  <td>Anomalías y eventos</td>
+  <td id="anomalías y eventos"></td>
+  <td id="promedio-anomalías y eventos"></td>
+  <td id="barra-anomalías y eventos"></td>
+</tr>
+<tr>
+  <td>Procesos de detección</td>
+  <td id="procesos de detección"></td>
+  <td id="promedio-procesos de detección"></td>
+  <td id="barra-procesos de detección"></td>
+</tr>
+<tr>
+  <td>Comunicación</td>
+  <td id="comunicación"></td>
+  <td id="promedio-comunicación"></td>
+  <td id="barra-comunicación"></td>
+</tr>
+<tr>
+  <td>Análisis</td>
+  <td id="análisis"></td>
+  <td id="promedio-análisis"></td>
+  <td id="barra-análisis"></td>
+</tr>
+<tr>
+  <td>Mitigación</td>
+  <td id="mitigación"></td>
+  <td id="promedio-mitigación"></td>
+  <td id="barra-mitigación"></td>
+</tr>
+<tr>
+  <td>Mejoras</td>
+  <td id="mejoras"></td>
+  <td id="promedio-mejoras"></td>
+  <td id="barra-mejoras"></td>
+</tr>
+<tr>
+  <td>Plan de recuperación</td>
+  <td id="plan de recuperación"></td>
+  <td id="promedio-plan de recuperación"></td>
+  <td id="barra-plan de recuperación"></td>
+</tr>
+
+
+
+
+    <!-- Más categorías aquí si es necesario -->
+  </tbody>
+</table>
+</div>
+        <!-- Tabla de promedios -->
+    <style>
+  td[id^="barra-"] {
+    width: 100px;
+    height: 20px;
+  }
+</style>
+    <!-- tabla de promedios en dominio-->
+
+
+
+<h1>Resultados total</h1>
+
+  <div id="resultados">
+    <!-- Otros resultados y elementos -->
+
+    <!-- Elemento para mostrar el promedio general -->
+    <h2>Promedio General: <span id="promedio-general"></span></h2>
+  </div>
+
+</div>
+
+    <br>
+    <div class="header">
+
+     <a href="{{ url_for('descargar_pdf') }}" class="btn btn-danger" style="font-size: 24px; background-color: #a10808; animation: pulse 1s infinite; animation-duration: 1s;"> Descargar Reporte</a>
+
+
+    </div>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Secure Pyme Cloud - Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+
+
+<script>
+
+    const sumas = {
+  'Proteger': { suma: 0, count: 0 },
+  'Detectar': { suma: 0, count: 0 },
+  'Identificar': { suma: 0, count: 0 },
+  'Responder': { suma: 0, count: 0 },
+  'Recuperar': { suma: 0, count: 0 },
+  // Agregar más categorías aquí si es necesario
+};
+
+    const sumas1 = {
+      'Gestión de activos': { suma: 0, count: 0 },
+      'Entorno y ambiente del negocio': { suma: 0, count: 0 },
+      'Gobierno': { suma: 0, count: 0 },
+      'Evaluación de riesgos': { suma: 0, count: 0 },
+        'Estrategia de gestión de riesgos': { suma: 0, count: 0 },
+      'Gestión de riesgos de la cadena de suministro': { suma: 0, count: 0 },
+        //Dominios de la función Proteger:
+        'Gestión de identidad, autenticación y control de acceso': { suma: 0, count: 0 },
+        'Gestión de identidad y control de acceso': { suma: 0, count: 0 },
+        'Procesos y procedimientos de protección de la información': { suma: 0, count: 0 },
+        'Tecnología para la protección': { suma: 0, count: 0 },
+        'Concientización y Capacitación': { suma: 0, count: 0 },
+        'Seguridad de datos': { suma: 0, count: 0 },
+        'Mantenimiento': { suma: 0, count: 0 },
+           //Dominios de la función Detectar:
+        'Monitoreo continuo de seguridad': { suma: 0, count: 0 },
+        'Anomalías y eventos': { suma: 0, count: 0 },
+        'Procesos de detección': { suma: 0, count: 0 },
+             //Dominios de la función Detectar:
+        'Comunicación': { suma: 0, count: 0 },
+        'Análisis': { suma: 0, count: 0 },
+        'Mitigación': { suma: 0, count: 0 },
+        'Mejoras': { suma: 0, count: 0 },
+        //Dominios de la función recuperar:
+        'Plan de recuperación': { suma: 0, count: 0 },
+        'Mejoras': { suma: 0, count: 0 },
+
+
+
+    };
+
+
+
+
+
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Inicializamos un objeto para guardar las sumas y conteos por cada categoría
+
+
+    // Buscamos todas las filas en el cuerpo de la tabla
+    const filas = document.querySelectorAll('.custom-table tbody tr');
+
+    // Iteramos sobre cada fila para calcular la suma y el conteo
+    filas.forEach(function(fila) {
+      const categoria = fila.querySelector('td:first-child').textContent;
+      const estado = parseInt(fila.querySelector('td:nth-child(5)').textContent);
+
+      if (sumas[categoria]) {
+        sumas[categoria].suma += estado;
+        sumas[categoria].count++;
+      }
+    });
+
+    // ... El resto de tu código para sumar y contar
+
+    for (const [categoria, datos] of Object.entries(sumas)) {
+      const promedio = datos.suma / datos.count;
+      const idPromedio = `promedio-${categoria.toLowerCase()}`;
+      const idBarra = `barra-${categoria.toLowerCase()}`;
+      const elementoPromedio = document.getElementById(idPromedio);
+
+
+
+      if (elementoPromedio !== null) {
+        elementoPromedio.textContent = promedio.toFixed(2);
+        setBarColor(idBarra, promedio);
+      } else {
+        console.warn("Elemento no encontrado para ID:", idPromedio);
+      }
+    }
+
+  });
+  function setBarColor(id, value) {
+    let color;
+    if (value >= 1 && value < 2) {
+        color = "red";
+    } else if (value >= 2 && value < 3) {
+        color = "#FF6961";
+    } else if (value >= 3 && value < 4) {
+        color = "#eea131";
+    } else if (value >= 4 && value < 5) {
+        color = "#eeda09";
+    } else if (value >= 5 && value < 6) {
+        color = "#95c00f";
+    } else if (value >= 6) {
+        color = "#00ee00";
+    }
+
+    const elementoBarra = document.getElementById(id);
+    if (elementoBarra !== null) {
+      elementoBarra.style.backgroundColor = color;
+    } else {
+      console.warn("Elemento no encontrado para ID:", id);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Inicializamos un objeto para guardar las sumas y conteos por cada categoría
+
+
+    // Buscamos todas las filas en el cuerpo de la tabla
+    const filas = document.querySelectorAll('.custom-table tbody tr');
+
+    // Iteramos sobre cada fila para calcular la suma y el conteo
+    filas.forEach(function(fila) {
+      const categoria1 = fila.querySelector('td:nth-child(2)').textContent;
+      const estado = parseInt(fila.querySelector('td:nth-child(5)').textContent);
+
+      if (sumas1[categoria1]) {
+        sumas1[categoria1].suma += estado;
+        sumas1[categoria1].count++;
+      }
+    });
+
+    // ... El resto de tu código para sumar y contar
+
+    for (const [categoria1, datos] of Object.entries(sumas1)) {
+      const promedio = datos.suma / datos.count;
+      const idPromedio = `promedio-${categoria1.toLowerCase()}`;
+      const idBarra = `barra-${categoria1.toLowerCase()}`;
+      const elementoPromedio = document.getElementById(idPromedio);
+
+
+
+      if (elementoPromedio !== null) {
+        elementoPromedio.textContent = promedio.toFixed(2);
+        setBarColor(idBarra, promedio);
+      } else {
+        console.warn("Elemento no encontrado para ID:", idPromedio);
+      }
+    }
+
+  });
+  function setBarColor(id, value) {
+    let color;
+    if (value >= 1 && value < 2) {
+        color = "red";
+    } else if (value >= 2 && value < 3) {
+        color = "#FF6961";
+    } else if (value >= 3 && value < 4) {
+        color = "#eea131";
+    } else if (value >= 4 && value < 5) {
+        color = "#eeda09";
+    } else if (value >= 5 && value < 6) {
+        color = "#95c00f";
+    } else if (value >= 6) {
+        color = "#00ee00";
+    }
+
+    const elementoBarra = document.getElementById(id);
+    if (elementoBarra !== null) {
+      elementoBarra.style.backgroundColor = color;
+    } else {
+      console.warn("Elemento no encontrado para ID:", id);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Aquí tus funciones y código existente para 'sumas' y 'sumas1'
+    // ...
+
+    // Función para calcular el promedio general
+    function calcularPromedioGeneral() {
+      let sumaTotal = 0;
+      let countTotal = 0;
+
+      // Sumar los datos del primer script
+      for (const [_, datos] of Object.entries(sumas)) {
+        sumaTotal += datos.suma;
+        countTotal += datos.count;
+      }
+
+      // Sumar los datos del segundo script
+      for (const [_, datos] of Object.entries(sumas1)) {
+        sumaTotal += datos.suma;
+        countTotal += datos.count;
+      }
+
+      // Calcular el promedio general
+      const promedioGeneral = sumaTotal / countTotal;
+
+      // Aquí puedes mostrar el promedio general donde necesites
+      console.log("El promedio general es:", promedioGeneral.toFixed(2));
+      const elementoPromedioGeneral = document.getElementById("promedio-general");
+
+      if (elementoPromedioGeneral !== null) {
+        elementoPromedioGeneral.textContent = promedioGeneral.toFixed(2);
+      }
+    }
+
+    // Llamar a la función para calcular el promedio general
+    calcularPromedioGeneral();
+  });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        let content = document.querySelector("#content");
+        if (content) {
+            html2canvas(content).then(function(canvas) {
+                var imgData = canvas.toDataURL("image/png");
+
+                var imgWidth = 210;  // Anchura del PDF en mm (para formato A4)
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+
+                var pdfHeight = 297;  // Altura del PDF en mm (para formato A4)
+                var heightLeft = imgHeight;
+
+                var doc = new window.jspdf.jsPDF('p', 'mm');
+                var position = 0;
+
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                }
+                doc.save('reportespcv2.pdf');
+            });
+        } else {
+            console.error("Elemento no encontrado");
+        }
+    }, 2000);  // 2000 milisegundos = 2 segundos
+});
+</script>
+
+
+
+
+
+</body>
+</html>
